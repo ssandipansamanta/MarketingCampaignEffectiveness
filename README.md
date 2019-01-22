@@ -4,8 +4,8 @@
 
 ```
 As part of a marketing campaign to increase customer spend and loyalty, 
-QIAGEN sent out coupons to 4000 buyers by post. Each buyer received one coupon for $10 
-which they could spend on QIAGEN.com in a two week window between the 5th and 18th January 2015. 
+client sent out coupons to 4000 buyers by post. Each buyer received one coupon for $10 
+which they could spend on client.com in a two week window between the 5th and 18th January 2015. 
 Some buyers used their coupon to get money off their purchases in that time (Redeemers) and 
 others chose not to (Non-Redeemers). A third group of shoppers (Control) were not sent 
 a coupon but will act as a benchmark as we assess whether the coupons successfully 
