@@ -3,17 +3,16 @@ Marketing Campaign Effectiveness
 
 # Introduction
 
-```
 As part of a marketing campaign to increase customer spend and loyalty, client sent out coupons to 4000 buyers by post. 
 Each buyer received one coupon for $10 which they could spend on client.com in a two week window between the 5th and 
 18th January 2015.Some buyers used their coupon to get money off their purchases in that time (Redeemers) and others 
 chose not to (Non-Redeemers). A third group of shoppers (Control) were not sent a coupon but will act as a benchmark 
 as we assess whether the coupons successfully boosted customer spending as hoped.
-```
+
 
 # Datasets
 
-Data sets are present in input folder. Customer weekly spend information is available in AllUser file. You will also find # of purchase, test or control group in this file. Redeemers customers list present in Redeemers file.
+Input data sets are present in input folder. Customer weekly spend information is available in AllUser file. You will also find # of purchase, test or control group in this file. Redeemers customers list present in Redeemers file.
 
 # Business Questions
 
@@ -28,7 +27,7 @@ Data sets are present in input folder. Customer weekly spend information is avai
 # Set up Structure
 
 * Input Files would be kept in Input folder.
-* Output Files would be saved in Output folder automatically.
+* Output Files would be saved in Output folder automatically. One sample output is present here for an example.
 * src contains all source codes
 	* Main Code: Calling all the codes and specifying arguments.
 	* UDF: User Defined Function.
