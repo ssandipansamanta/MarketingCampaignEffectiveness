@@ -5,10 +5,10 @@ Marketing Campaign Effectiveness
 
 ```
 As part of a marketing campaign to increase customer spend and loyalty, client sent out coupons to 4000 buyers by post. 
-Each buyer received one coupon for $10 which they could spend on client.com in a two week window between the 5th and 18th January 2015. 
-Some buyers used their coupon to get money off their purchases in that time (Redeemers) and others chose not to (Non-Redeemers). 
-A third group of shoppers (Control) were not sent a coupon but will act as a benchmark as we assess whether the coupons successfully 
-boosted customer spending as hoped.
+Each buyer received one coupon for $10 which they could spend on client.com in a two week window between the 5th and 
+18th January 2015.Some buyers used their coupon to get money off their purchases in that time (Redeemers) and others 
+chose not to (Non-Redeemers). A third group of shoppers (Control) were not sent a coupon but will act as a benchmark 
+as we assess whether the coupons successfully boosted customer spending as hoped.
 ```
 
 # Datasets
@@ -30,15 +30,15 @@ Data sets are present in input folder. Customer weekly spend information is avai
 * Input Files would be kept in Input folder.
 * Output Files would be saved in Output folder automatically.
 * src contains all source codes
-	* 1. Main Code: Calling all the codes and specifying arguments.
-	* 2. UDF: User Defined Function.
-	* 3. Required Libraries: Loading all Packages.
-	* 4. Data Preparation: Importing csvs and joining tables, checking formats etc.
-	* 5. Basic Diagnostic: Group level, customer level analysis.
-	* 6. Spend Distribution: Roll up spend at desired level to get an idea how sales are varying over time.
-	* 7. Incremental Spends: Roll up spend by different groups and compute incremental w.r.t control group.
-	* 8. Computing ROI: Compute ROI for the coupons.
-	* 9. Additional Analysis: Profiling of customers based on spends and # of purchase. 
+	* Main Code: Calling all the codes and specifying arguments.
+	* UDF: User Defined Function.
+	* Required Libraries: Loading all Packages.
+	* Data Preparation: Importing csvs and joining tables, checking formats etc.
+	* Basic Diagnostic: Group level, customer level analysis.
+	* Spend Distribution: Roll up spend at desired level to get an idea how sales are varying over time.
+	* Incremental Spends: Roll up spend by different groups and compute incremental w.r.t control group.
+	* Computing ROI: Compute ROI for the coupons.
+	* Additional Analysis: Profiling of customers based on spends and # of purchase. 
 
 # Future Work
 
