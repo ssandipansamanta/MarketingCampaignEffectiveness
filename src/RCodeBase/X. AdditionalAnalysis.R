@@ -1,34 +1,60 @@
-ADSFurtherAnalysis <- SenstivityAnalysis(InputData = ADS,
+#' @ABTesting:
+#' 
+ABTestingADS <- data.table:::subset.data.table(ADS,(StartDate_ROI <= Week)  & (Week <= EndDate_ROI) & CustomerType != "NonRedeemers")
+
+#' Aggregating Revenue at Group Customerlevel;
+#' 
+CustomerGroupLevelSpend <- ABTestingADS[,.(TotalRevenue = sum(Spend,na.rm = TRUE)), by = c('Group','CustomerType','UserID')]  
+
+#' AB Testing;
+ABTesting <- lm(formula = TotalRevenue ~ CustomerType, data = CustomerGroupLevelSpend)
+summary(ABTesting)
+
+#' @Profiling:
+#' 
+
+ProfilingAnalysisADS <- SenstivityAnalysis(InputData = ADS,
                              StDate = as.Date('01/19/2015',InputDateFormat),
                              EnDate = as.Date('02/23/2015',InputDateFormat) ,
                              groupby = c('UserID','Group','CustomerType'),
-                             MinNoTransWeeks = 2,
                              Skewnessthreshold = Skewnessthreshold)
 
-ADSFurtherAnalysis[,NoofActiveWeeks:=.N,by="UserID"]
-ADSSegmentation <- ADSFurtherAnalysis[,.(Spend = sum(Spend),
+#' Number of Active Weeks;
+#' 
+ProfilingAnalysisADS[,NoofActiveWeeks:=.N,by="UserID"]
+ADSSegmentation <- setDF(ProfilingAnalysisADS[,.(Spend = sum(Spend),
                                          Purchases = sum(Purchases),
                                          NoofActiveWeeks = mean(NoofActiveWeeks)), 
-                                         by = c('UserID')]
-ADSSegmentation <- setDF(data.table:::subset.data.table(ADSSegmentation, NoofActiveWeeks > 1 ))
+                                         by = c('UserID')])
+
+# ADSSegmentation <- setDF(data.table:::subset.data.table(ADSSegmentation, NoofActiveWeeks > 1 ))
 
 # MemoryClearance(listofObjects = "ADSFurtherAnalysis")
 
 var <- c("Spend","Purchases")
-#' Standardizing before Clustering
-df <- scale(ADSSegmentation[var]) 
 
-wssplot <- function(data, nc=15, seed=1234){
+#' Standardizing before Clustering
+#' 
+
+Profilingdf <- scale(ADSSegmentation[var]) 
+
+#' Within Sum of Square;
+#' 
+wssplot <- function(data, noofcluster, seed){
+  data <- Profilingdf
   wss <- (nrow(data)-1)*sum(apply(data,2,var))
   for (i in 2:nc){
     set.seed(seed)
-    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
-  plot(1:nc, wss, type="b", xlab="Number of Clusters",
-       ylab="Within groups sum of squares")}
-wssplot(df) 
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)
+  }
+  plot(1:nc, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
+  return(wss)
+}
 
-set.seed(1234)
-fitkmeans <- kmeans(df, 8, nstart=300)
+WSSVariance <- as.data.table(wssplot(Profilingdf,noofcluster = 15,seed = 12345))
+
+set.seed(12345)
+fitkmeans <- kmeans(Profilingdf, 7, nstart=300)
 fitkmeans$size
 
 aggregate(ADSSegmentation[var], by=list(cluster=fitkmeans$cluster), mean)

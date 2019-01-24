@@ -60,9 +60,9 @@ CustomerLevelInsights <- function(InputData, StDate, EnDate, groupby){
                               H2 = Rfast::nth(Spend, 2, descending = TRUE),
                               H3 = Rfast::nth(Spend, 3, descending = TRUE),
                               
-                              LowerCap = stats::quantile(Spend,na.rm = TRUE, probs=0.05),
+                              LowerCap = stats::quantile(Spend,na.rm = TRUE, probs=Lowercutoff),
                               Median = stats::quantile(Spend,na.rm = TRUE, probs=0.50),
-                              UpperCap = stats::quantile(Spend,na.rm = TRUE, probs=0.95),
+                              UpperCap = stats::quantile(Spend,na.rm = TRUE, probs=Uppercutoff),
                               
                               Skewness = Rfast::skew(Spend,pvalue = FALSE)),by = groupby]
   return(SummaryStats)
@@ -75,7 +75,7 @@ SenstivityAnalysis <- function(InputData, StDate, EnDate, groupby,Skewnessthresh
   
   temp <- CustomerLevelInsights(InputData = ADS,StDate = StDate,EnDate = EnDate,groupby = groupby) 
   
-  temp[, LoyalFlag := ifelse((-Skewnessthreshold < Skewness & Skewness < Skewnessthreshold ), 
+  temp[, LoyalFlag := ifelse((NoofWeeksActive > 2 & -Skewnessthreshold < Skewness & Skewness < Skewnessthreshold ), 
                              'Loyal','Suspicious')]
   LoyalCustomerInfo <- temp[,c('UserID','LoyalFlag','LowerCap','UpperCap')]
   
@@ -83,19 +83,21 @@ SenstivityAnalysis <- function(InputData, StDate, EnDate, groupby,Skewnessthresh
                                         all.x = TRUE,by = 'UserID',
                                         allow.cartesian = TRUE)
   
-  ADSLoyal <- ADS_[LoyalFlag=='Loyal'][,-c("LowerCap","UpperCap")]
-  ADSSuspicios <- ADS_[LoyalFlag !='Loyal']
-  ADSSuspicios <- ADSSuspicios[,UpdatedSpend:=ifelse(Spend < LowerCap,LowerCap,ifelse(Spend > UpperCap,UpperCap,Spend))]
+  ADS_ <- setnames(ADS_, old = "Spend", new = "OldSpend")
+  ADS_[,Spend:=ifelse(LoyalFlag=='Loyal',OldSpend,
+                      ifelse(OldSpend < LowerCap,LowerCap,ifelse(OldSpend > UpperCap,UpperCap,OldSpend)))]
   
-  # print(ADSLoyal[,.(TotalSpend = sum(Spend)),by = 'Group'])
-  # print(ADSSuspicios[,.(TotalSpend = sum(Spend),TotalUpdatedSpend = sum(UpdatedSpend)),by = 'Group'])
-  ADSSuspicios <- ADSSuspicios[,-c("Spend","LowerCap","UpperCap")]
-  # WriteOutput(OutputDataFrame = ADSSuspicios,NameofFile = "Test",RemoveFile = FALSE)
+  FinalADS <- data.table:::subset.data.table(ADS_, (StDate <= Week)  & (Week <= EnDate))
   
-  ADSSuspicios <- setnames(ADSSuspicios, old = "UpdatedSpend", new = "Spend")
+  cat("=====================================================================\n")
+  cat("================= Error due to capping and tapping  =================\n")
+  cat("=====================================================================\n")
+  print(FinalADS[,.(TotalNewSpend = sum(Spend),
+                    TotalOldSpend = sum(OldSpend),
+                    Deviationpercent = (1 - sum(Spend)/sum(OldSpend))*100)
+                 ,by = c('Group','CustomerType')])
+  cat("=====================================================================\n")
   
-  ADSUpdated <- rbind(ADSLoyal,ADSSuspicios)
-  FinalADS <- data.table:::subset.data.table(ADSUpdated, (StDate <= Week)  & (Week <= EnDate))
   
-  return(FinalADS)
+  return(FinalADS[,-c("OldSpend")])
 }

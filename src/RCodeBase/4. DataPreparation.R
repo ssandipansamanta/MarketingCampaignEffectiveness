@@ -39,4 +39,4 @@ ADS[,CustomerType := ifelse(Group == "Control","Control",
 
 WriteOutput(OutputDataFrame = ADS,NameofFile = "Q1_AllUserswithCustType",RemoveFile = FALSE)
 
-source("BasicDiagnostic.R")
+source("5. BasicDiagnostic.R")
