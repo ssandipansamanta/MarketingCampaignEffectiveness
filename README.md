@@ -41,5 +41,5 @@ Input data sets are present in input folder. Customer weekly spend information i
 
 # Future Work
 
-* R-Shiny app for dynamic reports.
+* Create more advanced R-Shiny app for dynamic reports.
 * Error Logging to have production level readyness.
