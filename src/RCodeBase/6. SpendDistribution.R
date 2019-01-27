@@ -5,7 +5,7 @@ SpendDistribution <- function(InputData,groupby){
                              AvgSpend = mean(Spend,na.rm = TRUE)),by=groupby]
   
   #' Reshaping Data for Visualization
-  ReshapingAggDist <<- data.table:::dcast.data.table(data = AggDist,
+  ReshapingAggDist <- data.table:::dcast.data.table(data = AggDist,
                                                Week ~ CustomerType,
                                                value.var = c("TotalSpend","AvgSpend"),
                                                fun = list(sum, sum))
@@ -25,23 +25,5 @@ SpendDistribution(InputData = SenstivityAnalysis(InputData = ADS,
   
 
 
-#' Plots for Sales Distribution
-#' 
-plot_ly(ReshapingAggDist, x = ~Week) %>%
-  add_trace(y = ~TotalSpend_sum_Control, name = 'Control',mode = 'lines') %>%
-  add_trace(y = ~TotalSpend_sum_NonRedeemers, name = 'Non Redeemers', mode = 'lines') %>%
-  add_trace(y = ~TotalSpend_sum_Redeemers, name = 'Redeemers', mode = 'lines') %>%
-  layout(title = 'Total Spend Distribution',
-         xaxis = list(title = 'Weeks',zeroline = TRUE),
-         yaxis = list(title = 'Spends'))
 
-plot_ly(ReshapingAggDist, x = ~Week) %>%
-  add_trace(y = ~AvgSpend_sum_Control, name = 'Control',mode = 'lines') %>%
-  add_trace(y = ~AvgSpend_sum_NonRedeemers, name = 'Non Redeemers', mode = 'lines') %>%
-  add_trace(y = ~AvgSpend_sum_Redeemers, name = 'Redeemers', mode = 'lines') %>%
-  layout(title = 'Average Spend Distribution',
-         xaxis = list(title = 'Weeks',zeroline = TRUE),
-         yaxis = list(title = 'Spends'))
-
-MemoryClearance(listofObjects = "ReshapingAggDist")
 
